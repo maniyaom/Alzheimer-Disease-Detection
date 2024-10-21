@@ -1,17 +1,28 @@
-// src/components/Navbar.jsx
-import React, { useContext, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-// import { AuthContext } from "../context/AuthContext";
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 const Navbar = () => {
-  // const { isAuthenticated, logout } = useContext(AuthContext);
-  const [isAuthenticated,setIsAuthenticated] = useState(false);
+  const auth = getAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const location = useLocation(); // Get the current path
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+
+    // Cleanup the subscription on unmount
+    return () => unsubscribe();
+  }, [auth]);
+
   const handleLogout = () => {
-    // logout(); // Calling logout from the AuthContext
-    console.log("logout successfull");
+    signOut(auth);
   };
 
   return (
@@ -31,41 +42,36 @@ const Navbar = () => {
         <div className='left-options flex space-x-4'>
           <Link
             to='/model1'
-            className={`${
-              location.pathname === "/model1" ? "bg-blue-500 underline" : "bg-blue-600"
-            } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
+            className={`${location.pathname === "/model1" ? "bg-blue-500 underline" : "bg-blue-600"
+              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
           >
             Diabetes Risk Assessment
           </Link>
           <Link
             to='/model2'
-            className={`${
-              location.pathname === "/model2" ? "bg-blue-500 underline" : "bg-blue-600"
-            } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
+            className={`${location.pathname === "/model2" ? "bg-blue-500 underline" : "bg-blue-600"
+              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
           >
             Diabetes Predictor
           </Link>
           <Link
             to='/blogs'
-            className={`${
-              location.pathname === "/blogs" ? "bg-blue-500 underline" : "bg-blue-600"
-            } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
+            className={`${location.pathname === "/blogs" ? "bg-blue-500 underline" : "bg-blue-600"
+              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
           >
             Blogs
           </Link>
           <Link
             to='/exercise'
-            className={`${
-              location.pathname === "/exercise" ? "bg-blue-500 underline" : "bg-blue-600"
-            } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
+            className={`${location.pathname === "/exercise" ? "bg-blue-500 underline" : "bg-blue-600"
+              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
           >
             Exercise
           </Link>
           <Link
             to='/calculator'
-            className={`${
-              location.pathname === "/calculator" ? "bg-blue-500 underline" : "bg-blue-600"
-            } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
+            className={`${location.pathname === "/calculator" ? "bg-blue-500 underline" : "bg-blue-600"
+              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
           >
             Calculator
           </Link>
