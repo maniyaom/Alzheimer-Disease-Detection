@@ -4,86 +4,82 @@ import axios from "axios";
 
 // Mappings for binary and ordinal values
 const binary_mappings = {
-  gender: { Male: 0, Female: 1 },
-  smoking_habits: { Yes: 1, No: 0 },
-  alcohol_consumption: { Never: 0, Rarely: 1, Occasionally: 2, Frequently: 3, Daily: 4 },
-  high_blood_pressure: { Yes: 1, No: 0 },
-  diabetes_status: { Yes: 1, No: 0 },
+  gender: { Male: 1, Female: 0 },
+  smoking: { Yes: 1, No: 0 },
+  family_history_alzheimers: { Yes: 1, No: 0 },
+  cardiovascular_disease: { Yes: 1, No: 0 },
+  diabetes: { Yes: 1, No: 0 },
+  depression: { Yes: 1, No: 0 },
+  head_injury: { Yes: 1, No: 0 },
+  hypertension: { Yes: 1, No: 0 },
+  memory_complaints: { Yes: 1, No: 0 },
+  behavioral_problems: { Yes: 1, No: 0 },
+  confusion: { Yes: 1, No: 0 },
+  personality_changes: { Yes: 1, No: 0 },
+  difficulty_completing_tasks: { Yes: 1, No: 0 },
+  forgetfulness: { Yes: 1, No: 0 },
 };
 
 const ordinal_mappings = {
-  sleep_duration: { "Less than 4 hours": 0, "4-5 hours": 1, "6-7 hours": 2, "More than 9 hours": 3 },
-  age: { "20-25": 0, "25-30": 1, "30-35": 2, "35-40": 3, "40-45": 4, "45-50": 5, "50-55": 6, "55-60": 7, "60-65": 8, "65+": 9 },
-  physical_intensity_work: {
-    "Not physically intensive": 0,
-    "Lightly physically intensive": 1,
-    "Moderately physically intensive": 2,
-    "Very physically intensive": 3,
+  ethnicity: { "Caucasian": 2, "Other": 3, "African American": 0, "Asian": 1 },
+  education_level: { "Bachelor": 0, "None": 3, "High School": 1, "Higher": 2 },
+  alcohol_consumption: { "Never": 0, "Rarely": 1, "Occasionally": 2, "Frequently": 3, "Daily": 4 },
+  physical_activity: { "Never": 0, "Rarely": 1, "Monthly": 2, "Weekly": 3, "Daily": 4 },
+  diet_quality: {
+    "Very Poor": 0,
+    "Poor": 1,
+    "Moderate": 2,
+    "Good": 3,
+    "Excellent": 4
   },
-  physical_exercise_frequency: { Never: 0, Rarely: 1, Monthly: 2, Weekly: 3, Daily: 4 },
-  fast_food_frequency: { Rarely: 0, Occasionally: 1, Frequently: 2, Daily: 3 },
-  sugary_food_frequency: { Rarely: 0, Occasionally: 1, Frequently: 2, Daily: 3 },
-  sugary_drink_frequency: { Rarely: 0, Occasionally: 1, Frequently: 2, Daily: 3 },
-  sleep_quality: { "Very Poor (Very inconsistent)": 0, "Poor (Inconsistent)": 1, "Good (Somewhat consistent)": 2, "Excellent (Very consistent)": 3 },
-  stress_levels: { Low: 0, Medium: 1, High: 2 },
+  sleep_quality: { "Very Poor": 0, "Poor": 1, "Good": 2, "Excellent": 3 }
 };
 
 // Function to encode user data
 const encodeUserData = (userData) => {
-  // Age categorization
-  let ageCategory;
-  const age = parseInt(userData.age);
-  if (age < 25) ageCategory = "20-25";
-  else if (age < 30) ageCategory = "25-30";
-  else if (age < 35) ageCategory = "30-35";
-  else if (age < 40) ageCategory = "35-40";
-  else if (age < 45) ageCategory = "40-45";
-  else if (age < 50) ageCategory = "45-50";
-  else if (age < 55) ageCategory = "50-55";
-  else if (age < 60) ageCategory = "55-60";
-  else if (age < 65) ageCategory = "60-65";
-  else ageCategory = "65+";
-
-  // BMI calculation
+  // BMI calculation (weight in kg, height in cm)
   const height = parseInt(userData.height);
   const weight = parseInt(userData.weight);
   const bmi = weight / (height / 100) ** 2;
 
-  // BMI categories
-  const bmi_bins = [0, 18.5, 24.9, 29.9, 34.9, 39.9, Infinity];
-  const weightStatusLabels = ["Underweight", "Normal weight", "Overweight", "Obesity class I", "Obesity class II", "Obesity class III"];
-  const weightStatus = bmi_bins.findIndex((bin, index) => bmi >= bin && (index === bmi_bins.length - 1 || bmi < bmi_bins[index + 1]));
-
-  // Count sleep issues, symptoms, and other conditions
-  const sleepIssuesCount = userData.sleepIssues.includes("None") ? 0 : userData.sleepIssues.length;
-  const symptomsCount = userData.symptoms.includes("None") ? 0 : userData.symptoms.length;
-  const otherConditionsCount = userData.otherMedicalConditions.includes("None") ? 0 : userData.otherMedicalConditions.length;
-
   // Prepare encoding array
   const encodingArray = [
-    ordinal_mappings.age[ageCategory],
-    binary_mappings.gender[userData.gender],
-    weightStatus,
-    ordinal_mappings.physical_intensity_work[userData.workIntensity],
-    ordinal_mappings.physical_exercise_frequency[userData.exerciseFrequency],
-    ordinal_mappings.fast_food_frequency[userData.fastFoodFrequency],
-    ordinal_mappings.sugary_food_frequency[userData.sugaryFoodFrequency],
-    ordinal_mappings.sugary_drink_frequency[userData.sugaryDrinkFrequency],
-    binary_mappings.smoking_habits[userData.smoking],
-    binary_mappings.alcohol_consumption[userData.alcohol],
-    ordinal_mappings.sleep_duration[userData.sleepDuration],
-    ordinal_mappings.sleep_quality[userData.sleepQuality],
-    sleepIssuesCount,
-    ordinal_mappings.stress_levels[userData.stressLevels],
-    binary_mappings.high_blood_pressure[userData.highBloodPressure],
-    parseInt(userData.familyHistory),
-    ...["Gym", "None", "Running", "Sports", "Walking"].map((activity) => (userData.physicalActivity.includes(activity) ? 1 : 0)),
-    otherConditionsCount,
-    symptomsCount,
+    parseInt(userData.age), // Age (numeric)
+    binary_mappings.gender[userData.gender], // Gender
+    ordinal_mappings.ethnicity[userData.ethnicity], // Ethnicity
+    ordinal_mappings.education_level[userData.educationalLevel], // Education Level
+    bmi, // BMI
+    binary_mappings.smoking[userData.smoking], // Smoking
+    ordinal_mappings.alcohol_consumption[userData.alcohol], // Alcohol Consumption
+    ordinal_mappings.physical_activity[userData.physicalActivity], // Physical Activity
+    ordinal_mappings.diet_quality[userData.dietQuality], // Diet Quality
+    ordinal_mappings.sleep_quality[userData.sleepQuality], // Sleep Quality
+    binary_mappings.family_history_alzheimers[userData.familyHistoryAlzheimers], // Family History of Alzheimer's
+    binary_mappings.cardiovascular_disease[userData.cardiovascularDisease], // Cardiovascular Disease
+    binary_mappings.diabetes[userData.diabetes], // Diabetes
+    binary_mappings.depression[userData.depression], // Depression
+    binary_mappings.head_injury[userData.headInjury], // Head Injury
+    binary_mappings.hypertension[userData.hypertension], // Hypertension
+    parseInt(userData.systolicBP), // Systolic Blood Pressure
+    parseInt(userData.diastolicBP), // Diastolic Blood Pressure
+    parseInt(userData.cholesterolTotal), // Total Cholesterol
+    parseInt(userData.cholesterolLDL), // LDL Cholesterol
+    parseInt(userData.cholesterolHDL), // HDL Cholesterol
+    parseInt(userData.cholesterolTriglycerides), // Triglycerides
+    parseInt(userData.MMSE), // Mini-Mental State Exam (MMSE) score
+    parseInt(userData.functionalAssessment), // Functional Assessment score
+    binary_mappings.memory_complaints[userData.memoryComplaints], // Memory Complaints
+    binary_mappings.behavioral_problems[userData.behavioralProblems], // Behavioral Problems
+    parseInt(userData.ADL), // ADL (Activities of Daily Living)
+    binary_mappings.confusion[userData.confusion], // Confusion
+    binary_mappings.personality_changes[userData.personalityChanges], // Personality Changes
+    binary_mappings.difficulty_completing_tasks[userData.difficultyCompletingTasks], // Difficulty Completing Tasks
+    binary_mappings.forgetfulness[userData.forgetfulness] // Forgetfulness
   ];
 
   return encodingArray;
 };
+
 
 const Model1 = () => {
   const navigate = useNavigate();
@@ -92,36 +88,62 @@ const Model1 = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [email, setEmail] = useState(null);
   const [prediction, setPrediction] = useState(null);
+
   const [formData, setFormData] = useState({
-    // email: "",
-    age: "75",
-    gender: "Male",
-    height: "174",
-    weight: "80",
-    workIntensity: "Not physically intensive",
-    exerciseFrequency: "Never",
-    physicalActivity: ["Other"],
-    fastFoodFrequency: "Daily",
-    sugaryFoodFrequency: "Daily",
-    sugaryDrinkFrequency: "Daily",
-    smoking: "Yes",
-    alcohol: "Daily",
-    sleepDuration: "Less than 4 hours",
-    sleepQuality: "Very Poor (Very inconsistent)",
-    sleepIssues: ["Difficulty falling asleep"],
-    stressLevels: "High",
-    highBloodPressure: "Yes",
-    symptoms: ["None"],
-    familyHistory: "3",
-    otherMedicalConditions: ["High cholesterol"],
+    age: "34",  // Input field for age, left blank by default
+    gender: "Male",  // Default value set to "Male"
+    ethnicity: "Caucasian",  // Default value set to "Caucasian"
+    educationalLevel: "Bachelor",  // Default value set to "Bachelor"
+    height: "170",  // Input field for height, left blank by default
+    weight: "70",  // Input field for weight, left blank by default
+    // bmi will be calculated in the backend
+
+    smoking: "No",  // Default value set to "No"
+    alcohol: "Never",  // Default value set to "Never"
+    physicalActivity: "Never",  // Default value set to "Never"
+    dietQuality: "Very Poor",  // Default value set to "Very Poor"
+    sleepQuality: "Very Poor",  // Default value set to "Very Poor"
+
+    familyHistoryAlzheimers: "No",  // Default value set to "No"
+    cardiovascularDisease: "No",  // Default value set to "No"
+    diabetes: "No",  // Default value set to "No"
+    depression: "No",  // Default value set to "No"
+    headInjury: "No",  // Default value set to "No"
+    hypertension: "No",  // Default value set to "No"
+
+    systolicBP: 120,  // Default value set to 120 mmHg
+    diastolicBP: 80,  // Default value set to 80 mmHg
+
+    cholesterolTotal: 200,  // Default value set to 200 mg/dL
+    cholesterolLDL: 100,  // Default value set to 100 mg/dL
+    cholesterolHDL: 50,  // Default value set to 50 mg/dL
+    cholesterolTriglycerides: 150,  // Default value set to 150 mg/dL
+
+    MMSE: 30,  // Default value set to 30 (perfect score)
+    functionalAssessment: 10,  // Default value set to 10 (no impairment)
+    memoryComplaints: "Yes",  // Default value set to "No" (0)
+    behavioralProblems: "Yes",  // Default value set to "No" (0)
+    ADL: 10,  // Default value set to 10 (no impairment)
+    confusion: "Yes",  // Default value set to "No" (0)
+    personalityChanges: "Yes",  // Default value set to "No" (0)
+    difficultyCompletingTasks: "Yes",  // Default value set to "No" (0)
+    forgetfulness: "Yes",  // Default value set to "No" (0)
   });
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("authEmail");
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
+
+
+
+
+  // useEffect(() => {
+  //   const storedEmail = localStorage.getItem("authEmail");
+  //   if (storedEmail) {
+  //     setEmail(storedEmail);
+  //   }
+  // }, []);
+
+
+
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -148,6 +170,10 @@ const Model1 = () => {
     }
   };
 
+
+
+
+
   const validateForm = () => {
     const errors = {};
 
@@ -158,38 +184,80 @@ const Model1 = () => {
     const familyHistory = parseInt(formData.familyHistory, 10);
 
     // Age validation: between 1 and 120
-    if (isNaN(age) || age <= 0 || age > 120) {
-      errors.age = "Age must be between 1 and 120.";
+    if (!age || isNaN(age) || age <= 0 || age > 120) {
+      errors.age = "Age must be a valid number between 1 and 120.";
+    }
+
+    // Gender validation: must select a valid option
+    if (!formData.gender || (formData.gender !== "Male" && formData.gender !== "Female")) {
+      errors.gender = "Please select a valid gender.";
     }
 
     // Height validation: between 50 and 250 cm
-    if (isNaN(height) || height <= 50 || height > 250) {
-      errors.height = "Height must be between 50 and 250 cm.";
+    if (!height || isNaN(height) || height <= 50 || height > 250) {
+      errors.height = "Height must be a valid number between 50 and 250 cm.";
     }
 
     // Weight validation: between 1 and 300 kg
-    if (isNaN(weight) || weight <= 0 || weight > 300) {
-      errors.weight = "Weight must be between 1 and 300 kg.";
+    if (!weight || isNaN(weight) || weight <= 0 || weight > 300) {
+      errors.weight = "Weight must be a valid number between 1 and 300 kg.";
+    }
+
+    // Ethnicity validation: must select a valid option
+    if (!formData.ethnicity || ["Caucasian", "Other", "African American", "Asian"].indexOf(formData.ethnicity) === -1) {
+      errors.ethnicity = "Please select a valid ethnicity.";
+    }
+
+    // Educational level validation: must select a valid option
+    if (!formData.educationalLevel || ["Bachelor", "None", "High School", "Higher"].indexOf(formData.educationalLevel) === -1) {
+      errors.educationalLevel = "Please select a valid educational level.";
     }
 
     // Family history validation: must be a non-negative integer
-    if (isNaN(familyHistory) || familyHistory < 0) {
-      errors.familyHistory = "Family History of Diabetes must be a non-negative number.";
+    if (!Number.isInteger(familyHistory) || familyHistory < 0) {
+      errors.familyHistory = "Family History must be a non-negative number.";
     }
-    // console.log(errors);
-    // Update state with validation errors
+
+    // Alcohol validation: must select a valid option
+    if (!formData.alcohol || ["Never", "Rarely", "Occasionally", "Frequently", "Daily"].indexOf(formData.alcohol) === -1) {
+      errors.alcohol = "Please select a valid alcohol consumption frequency.";
+    }
+
+    // Physical Activity validation: must select a valid option
+    if (!formData.physicalActivity || ["Never", "Rarely", "Monthly", "Weekly", "Daily"].indexOf(formData.physicalActivity) === -1) {
+      errors.physicalActivity = "Please select a valid physical activity frequency.";
+    }
+
+    // Diet Quality validation: must select a valid option
+    if (!formData.dietQuality || ["Very Poor", "Poor", "Moderate", "Good", "Excellent"].indexOf(formData.dietQuality) === -1) {
+      errors.dietQuality = "Please select a valid diet quality.";
+    }
+
+    // Sleep Quality validation: must select a valid option
+    if (!formData.sleepQuality || ["Very Poor", "Poor", "Good", "Excellent"].indexOf(formData.sleepQuality) === -1) {
+      errors.sleepQuality = "Please select a valid sleep quality.";
+    }
+
+    // Set validation errors
     setValidationErrors(errors);
 
     // Return true if no validation errors exist
     return Object.keys(errors).length === 0;
   };
 
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted");
 
-    if (!validateForm()) {
-      return; // Stop if form is invalid
-    }
+    // if (!validateForm()) {
+    //   console.log("Form is invalid");
+    //   return; // Stop if form is invalid
+    // }
+
+    console.log("Form is valid, proceeding...");
 
     setLoading(true);
     setError(null);
@@ -198,39 +266,32 @@ const Model1 = () => {
     console.log("Encoded data:", encodingArray); // Log encoded data for debugging
 
     try {
-      // const response = await axios.post("http://localhost:5000/api/predict/model1", { ...encodingArray, email, features: formData });
-      const response = await axios.post("https://diabetes-webapp.onrender.com/api/predict/model1", { ...encodingArray, email, features: formData });
+      // const response = await axios.post("http://127.0.0.1:5000/predict", { ...encodingArray, email, features: formData });
+      const response = await axios.post("http://127.0.0.1:5000/predict", encodingArray);
 
-      // console.log('Response:', response);
-      const outcome = response.data.outcome;
+      console.log('Response:', response);
+
+      const outcome = response.data.prediction;
       setPrediction(outcome);
-
-      navigate("/Suggestions1", { state: { formData, prediction: outcome } }); // use actual outcome
+      navigate("/Suggestions1", { state: { formData, prediction: outcome } });
     } catch (err) {
-      // console.error('Error in prediction:', err);
+      console.error('Error in prediction:', err);
       setError("Error in prediction. Please try again.");
     } finally {
       setLoading(false); // Ensure loading state is reset after try/catch
     }
   };
 
+
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100 p-4'>
       <div className='w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg'>
-        <h1 className='text-2xl font-bold mb-6'>Diabetes Risk Assessment</h1>
+        <h1 className='text-2xl font-bold mb-6'>Alzheimer's Assessment Form</h1>
         <form onSubmit={handleSubmit}>
-          {/* Email */}
-          {/* <div className="mb-4">
-            <label className="font-bold text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="mt-1 p-2 border border-gray-300 w-full rounded-lg"
-              value={formData.email}
-              onChange={handleChange}
-              // required
-            />
-          </div> */}
+
+
+          <h2 className="font-bold text-lg text-gray-700 underline">Demographic Details        </h2> <br />
 
           {/* Age and Gender */}
           <div className='mb-4 grid grid-cols-2 gap-4'>
@@ -247,7 +308,7 @@ const Model1 = () => {
               {validationErrors.age && <p className='text-red-500'>{validationErrors.age}</p>}
             </div>
             <div>
-              <label className=' font-bold block text-gray-700'>Gender *</label>
+              <label className='font-bold block text-gray-700'>Gender *</label>
               <select name='gender' className='mt-1 p-2 border border-gray-300 w-full rounded-lg' value={formData.gender} onChange={handleChange} required>
                 <option value=''>Select Gender</option>
                 <option value='Male'>Male</option>
@@ -256,8 +317,48 @@ const Model1 = () => {
             </div>
           </div>
 
+          {/* Ethnicity */}
+          <div className='mb-6'>
+            <label className='font-bold text-gray-700'>Ethnicity *</label>
+            <select
+              name='ethnicity'
+              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+              value={formData.ethnicity}
+              onChange={handleChange}
+              required
+            >
+              <option value=''>Select Ethnicity</option>
+              <option value='Caucasian'>Caucasian</option>
+              <option value='African American'>African American</option>
+              <option value='Asian'>Asian</option>
+              <option value='Other'>Other</option>
+            </select>
+          </div>
+
+          {/* Educational Level */}
+          <div className='mb-6'>
+            <label className='font-bold text-gray-700'>Educational Level *</label>
+            <select
+              name='educationalLevel'
+              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+              value={formData.educationalLevel}
+              onChange={handleChange}
+              required
+            >
+              <option value=''>Select Educational Level</option>
+              <option value='None'>None</option>
+              <option value='High School'>High School</option>
+              <option value='Bachelor'>Bachelor</option>
+              <option value='Higher'>Higher</option>
+            </select>
+          </div>
+
+
+          <h2 className="font-bold text-lg text-gray-700 underline">Demographic Details </h2> <br />
+
+
           {/* Height and Weight */}
-          <div className='mb-6 grid grid-cols-2 gap-4'>
+          <div className='mb-4 grid grid-cols-2 gap-4'>
             <div>
               <label className='font-bold text-gray-700'>Height (cm) *</label>
               <input
@@ -284,132 +385,31 @@ const Model1 = () => {
             </div>
           </div>
 
-          {/* Work Intensity */}
-          <div className='mb-6'>
-            <label className='font-bold text-gray-700'>Physical Intensity of Professional Work *</label>
-            <select
-              name='workIntensity'
-              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
-              value={formData.workIntensity}
-              onChange={handleChange}
-              required
-            >
-              <option value=''>Select Intensity</option>
-              <option value='Very physically intensive'>Very physically intensive</option>
-              <option value='Moderately physically intensive'>Moderately physically intensive</option>
-              <option value='Lightly physically intensive'>Lightly physically intensive</option>
-              <option value='Not physically intensive'>Not physically intensive</option>
-            </select>
-          </div>
-
-          {/* Exercise Frequency */}
-          <div className='mb-6'>
-            <label className='font-bold text-gray-700'>Frequency of Physical Exercise *</label>
-            <select
-              name='exerciseFrequency'
-              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
-              value={formData.exerciseFrequency}
-              onChange={handleChange}
-              required
-            >
-              <option value=''>Select Frequency</option>
-              <option value='Daily'>Daily</option>
-              <option value='Weekly'>Weekly</option>
-              <option value='Monthly'>Monthly</option>
-              <option value='Rarely'>Rarely</option>
-              <option value='Never'>Never</option>
-            </select>
-          </div>
-
-          {/* Physical Activity */}
-          <div className='mb-6'>
-            <label className='font-bold text-gray-700'>Type of Physical Activity *</label>
-            <div className='mt-2'>
-              {["Walking", "Sports", "Running", "Gym", "Other", "None"].map((activity) => (
-                <label key={activity} className='inline-flex items-center ml-6'>
-                  <input
-                    type='checkbox'
-                    name='physicalActivity'
-                    value={activity}
-                    checked={formData.physicalActivity.includes(activity)}
-                    onChange={handleChange}
-                    className='form-checkbox'
-                  />
-                  <span className='ml-2'>{activity}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Fast Food Frequency */}
-          <div className='mb-6'>
-            <label className='font-bold text-gray-700'>Frequency of Fast Food or Processed Food Consumption *</label>
-            <select
-              name='fastFoodFrequency'
-              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
-              value={formData.fastFoodFrequency}
-              onChange={handleChange}
-              required
-            >
-              <option value=''>Select Frequency</option>
-              <option value='Rarely'>Rarely</option>
-              <option value='Occasionally'>Occasionally</option>
-              <option value='Frequently'>Frequently</option>
-              <option value='Daily'>Daily</option>
-            </select>
-          </div>
-
-          <div>
-            {/* Frequency of Sugary Food Consumption */}
-            <div className=' mb-6'>
-              <label className='block font-bold'>Frequency of Sugary Food Consumption *</label>
+          {/* Smoking and Alcohol Consumption */}
+          <div className='mb-6 grid grid-cols-2 gap-4'>
+            <div>
+              <label className='font-bold text-gray-700'>Smoking *</label>
               <select
-                name='sugaryFoodFrequency'
-                value={formData.sugaryFoodFrequency}
+                name='smoking'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.smoking}
                 onChange={handleChange}
-                className='w-full px-3 py-2 border rounded-lg'
                 required
               >
-                <option value=''>Select Frequency</option>
-                <option value='Rarely'>Rarely</option>
-                <option value='Occasionally'>Occasionally</option>
-                <option value='Frequently'>Frequently</option>
-                <option value='Daily'>Daily</option>
-              </select>
-            </div>
-
-            {/* Frequency of Sugary Drink Consumption */}
-            <div className=' mb-6'>
-              <label className='block font-bold'>Frequency of Sugary Drink Consumption *</label>
-              <select
-                name='sugaryDrinkFrequency'
-                value={formData.sugaryDrinkFrequency}
-                onChange={handleChange}
-                className='w-full px-3 py-2 border rounded-lg'
-                required
-              >
-                <option value=''>Select Frequency</option>
-                <option value='Rarely'>Rarely</option>
-                <option value='Occasionally'>Occasionally</option>
-                <option value='Frequently'>Frequently</option>
-                <option value='Daily'>Daily</option>
-              </select>
-            </div>
-
-            {/* Current Smoking Habits */}
-            <div className='mb-6'>
-              <label className='block font-bold'>Current Smoking Habits *</label>
-              <select name='smoking' value={formData.smoking} onChange={handleChange} className='w-full px-3 py-2 border rounded-lg' required>
-                <option value=''>Select</option>
-                <option value='Yes'>Yes</option>
+                <option value=''>Select Smoking Habit</option>
                 <option value='No'>No</option>
+                <option value='Yes'>Yes</option>
               </select>
             </div>
-
-            {/* Current Alcohol Consumption */}
-            <div className='mb-6'>
-              <label className='block font-bold'>Current Alcohol Consumption *</label>
-              <select name='alcohol' value={formData.alcohol} onChange={handleChange} className='w-full px-3 py-2 border rounded-lg' required>
+            <div>
+              <label className='font-bold text-gray-700'>Alcohol Consumption *</label>
+              <select
+                name='alcohol'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.alcohol}
+                onChange={handleChange}
+                required
+              >
                 <option value=''>Select Frequency</option>
                 <option value='Never'>Never</option>
                 <option value='Rarely'>Rarely</option>
@@ -418,85 +418,307 @@ const Model1 = () => {
                 <option value='Daily'>Daily</option>
               </select>
             </div>
+          </div>
 
-            {/* Average Sleep Duration */}
-            <div className=' mb-6'>
-              <label className='block font-bold'>Average Sleep Duration *</label>
-              <select name='sleepDuration' value={formData.sleepDuration} onChange={handleChange} className='w-full px-3 py-2 border rounded-lg' required>
-                <option value=''>Select Duration</option>
-                <option value='Less than 4 hours'>Less than 4 hours</option>
-                <option value='4-5 hours'>4-5 hours</option>
-                <option value='6-7 hours'>6-7 hours</option>
-                <option value='8-9 hours'>8-9 hours</option>
-                <option value='More than 9 hours'>More than 9 hours</option>
-              </select>
-            </div>
+          {/* Physical Activity */}
+          <div className='mb-6'>
+            <label className='font-bold text-gray-700'>Physical Activity *</label>
+            <select
+              name='physicalActivity'
+              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+              value={formData.physicalActivity}
+              onChange={handleChange}
+              required
+            >
+              <option value=''>Select Frequency</option>
+              <option value='Never'>Never</option>
+              <option value='Rarely'>Rarely</option>
+              <option value='Monthly'>Monthly</option>
+              <option value='Weekly'>Weekly</option>
+              <option value='Daily'>Daily</option>
+            </select>
+          </div>
 
-            {/* Sleep Quality (Consistency) */}
-            <div className=' mb-6'>
-              <label className='block font-bold'>Sleep Quality (Consistency) *</label>
-              <select name='sleepQuality' value={formData.sleepQuality} onChange={handleChange} className='w-full px-3 py-2 border rounded-lg' required>
-                <option value='Very Poor (Very inconsistent)'>Very Poor (Very inconsistent)</option>
-                <option value='Poor (Inconsistent)'>Poor (Inconsistent)</option>
-                <option value='Good (Somewhat consistent)'>Good (Somewhat consistent)</option>
-                <option value='Excellent (Very consistent)'>Excellent (Very consistent)</option>
-              </select>
-            </div>
+          {/* Diet Quality */}
+          <div className='mb-6'>
+            <label className='font-bold text-gray-700'>Diet Quality *</label>
+            <select
+              name='dietQuality'
+              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+              value={formData.dietQuality}
+              onChange={handleChange}
+              required
+            >
 
-            {/* Sleep Issues */}
-            <div className='mb-6'>
-              <label className=' mb-3 block font-bold '>Sleep Issues (Select all that apply) *</label>
-              <div className='grid grid-cols-2 gap-4 ml-6 '>
-                {" "}
-                {/* grid with 2 columns and some gap between items */}
-                {[
-                  "Difficulty falling asleep",
-                  "Frequent waking during the night",
-                  "Early morning awakenings",
-                  "Trouble staying asleep",
-                  "Unrefreshing sleep",
-                  "None",
-                ].map((issue) => (
-                  <label key={issue} className='flex items-center'>
-                    <input
-                      type='checkbox'
-                      name='sleepIssues'
-                      value={issue}
-                      checked={formData.sleepIssues.includes(issue)}
-                      onChange={handleChange}
-                      className='mr-4'
-                    />
-                    <span className='ml-2'>{issue}</span>
-                  </label>
-                ))}
+              <option value=''>Select Diet Quality</option>
+              <option value='Very Poor'>Very Poor (High processed/sugary foods)</option>
+              <option value='Poor'>Poor (Occasional processed/sugary foods)</option>
+              <option value='Moderate'>Moderate (Balanced with some processed foods)</option>
+              <option value='Good'>Good (Mostly whole and healthy foods)</option>
+              <option value='Excellent'>Excellent (Strictly whole and nutrient-rich foods)</option>
+            </select>
+          </div>
+
+          {/* Sleep Quality */}
+          <div className='mb-6'>
+            <label className='font-bold text-gray-700'>Sleep Quality *</label>
+            <select
+              name='sleepQuality'
+              className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+              value={formData.sleepQuality}
+              onChange={handleChange}
+              required
+            >
+              <option value=''>Select Sleep Quality</option>
+              <option value='Very Poor'>Very Poor</option>
+              <option value='Poor'>Poor</option>
+              <option value='Good'>Good</option>
+              <option value='Excellent'>Excellent</option>
+            </select>
+          </div>
+
+
+          <h2 className="font-bold text-lg text-gray-700 underline">Medical History</h2> <br />
+
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Family History of Alzheimer's */}
+            <div className='flex items-center'>
+              <label className="font-bold text-gray-700 mr-2">Family History of Alzheimer's</label>
+              <div className='flex space-x-4'>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="familyHistoryAlzheimers" value="Yes" onChange={handleChange} />
+                  <span className="ml-1">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="familyHistoryAlzheimers" value="No" onChange={handleChange} />
+                  <span className="ml-1">No</span>
+                </label>
               </div>
             </div>
 
-            {/* Stress Levels */}
-            <div className='mb-6'>
-              <label className='font-bold text-gray-700'>Overall Stress Levels *</label>
-              <select
-                name='stressLevels'
-                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
-                value={formData.stressLevels}
-                onChange={handleChange}
-                required
-              >
-                <option value=''>Select Stress Level</option>
-                <option value='Low'>Low</option>
-                <option value='Medium'>Medium</option>
-                <option value='High'>High</option>
-              </select>
+            {/* Cardiovascular Disease */}
+            <div className='flex items-center'>
+              <label className="font-bold text-gray-700 mr-2">Cardiovascular Disease</label>
+              <div className='flex space-x-4'>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="cardiovascularDisease" value="Yes" onChange={handleChange} />
+                  <span className="ml-1">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="cardiovascularDisease" value="No" onChange={handleChange} />
+                  <span className="ml-1">No</span>
+                </label>
+              </div>
             </div>
 
-            {/* Diagnosed with High Blood Pressure */}
-            <div className=' mb-6'>
-              <label className='block font-bold'>Diagnosed with High Blood Pressure? *</label>
-              <select
-                name='highBloodPressure'
-                value={formData.highBloodPressure}
+            {/* Diabetes */}
+            <div className='flex items-center'>
+              <label className="font-bold text-gray-700 mr-2">Diabetes</label>
+              <div className='flex space-x-4'>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="diabetes" value="Yes" onChange={handleChange} />
+                  <span className="ml-1">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="diabetes" value="No" onChange={handleChange} />
+                  <span className="ml-1">No</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Depression */}
+            <div className='flex items-center'>
+              <label className="font-bold text-gray-700 mr-2">Depression</label>
+              <div className='flex space-x-4'>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="depression" value="Yes" onChange={handleChange} />
+                  <span className="ml-1">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="depression" value="No" onChange={handleChange} />
+                  <span className="ml-1">No</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Head Injury */}
+            <div className='flex items-center'>
+              <label className="font-bold text-gray-700 mr-2">Head Injury</label>
+              <div className='flex space-x-4'>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="headInjury" value="Yes" onChange={handleChange} />
+                  <span className="ml-1">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="headInjury" value="No" onChange={handleChange} />
+                  <span className="ml-1">No</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Hypertension */}
+            <div className='flex items-center'>
+              <label className="font-bold text-gray-700 mr-2">Hypertension</label>
+              <div className='flex space-x-4'>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="hypertension" value="Yes" onChange={handleChange} />
+                  <span className="ml-1">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input type="radio" name="hypertension" value="No" onChange={handleChange} />
+                  <span className="ml-1">No</span>
+                </label>
+              </div>
+            </div>
+          </div>  <br></br>
+
+
+
+          <h2 className="font-bold text-lg text-gray-700 underline">Clinical Measurements</h2> <br />
+          {/* Systolic and Diastolic Blood Pressure */}
+          <div className="mb-6 grid grid-cols-2 gap-4">
+            <div>
+              <label className="font-bold text-gray-700">Systolic Blood Pressure (90-180 mmHg) *</label>
+              <input
+                type="range"
+                name="systolicBP"
+                min="90"
+                max="180"
+                className={`mt-1 w-full ${validationErrors.systolicBP ? "border-red-500" : "border-gray-300"}`}
+                value={formData.systolicBP}
                 onChange={handleChange}
-                className='w-full px-3 py-2 border rounded-lg'
+                required
+              />
+              <div className="mt-2">Selected: {formData.systolicBP} mmHg</div>
+              {validationErrors.systolicBP && <p className="text-red-500">{validationErrors.systolicBP}</p>}
+            </div>
+
+            <div>
+              <label className="font-bold text-gray-700">Diastolic Blood Pressure (60-120 mmHg) *</label>
+              <input
+                type="range"
+                name="diastolicBP"
+                min="60"
+                max="120"
+                className={`mt-1 w-full ${validationErrors.diastolicBP ? "border-red-500" : "border-gray-300"}`}
+                value={formData.diastolicBP}
+                onChange={handleChange}
+                required
+              />
+              <div className="mt-2">Selected: {formData.diastolicBP} mmHg</div>
+              {validationErrors.diastolicBP && <p className="text-red-500">{validationErrors.diastolicBP}</p>}
+            </div>
+          </div>
+
+          {/* Cholesterol Levels */}
+          <div className="mb-6">
+            <label className="font-bold text-gray-700">Total Cholesterol (150-300 mg/dL) *</label>
+            <input
+              type="range"
+              name="cholesterolTotal"
+              min="150"
+              max="300"
+              className={`mt-1 w-full ${validationErrors.cholesterolTotal ? "border-red-500" : "border-gray-300"}`}
+              value={formData.cholesterolTotal}
+              onChange={handleChange}
+              required
+            />
+            <div className="mt-2">Selected: {formData.cholesterolTotal} mg/dL</div>
+            {validationErrors.cholesterolTotal && <p className="text-red-500">{validationErrors.cholesterolTotal}</p>}
+          </div>
+
+          <div className="mb-6">
+            <label className="font-bold text-gray-700">LDL Cholesterol (50-200 mg/dL) *</label>
+            <input
+              type="range"
+              name="cholesterolLDL"
+              min="50"
+              max="200"
+              className={`mt-1 w-full ${validationErrors.cholesterolLDL ? "border-red-500" : "border-gray-300"}`}
+              value={formData.cholesterolLDL}
+              onChange={handleChange}
+              required
+            />
+            <div className="mt-2">Selected: {formData.cholesterolLDL} mg/dL</div>
+            {validationErrors.cholesterolLDL && <p className="text-red-500">{validationErrors.cholesterolLDL}</p>}
+          </div>
+
+          <div className="mb-6">
+            <label className="font-bold text-gray-700">HDL Cholesterol (20-100 mg/dL) *</label>
+            <input
+              type="range"
+              name="cholesterolHDL"
+              min="20"
+              max="100"
+              className={`mt-1 w-full ${validationErrors.cholesterolHDL ? "border-red-500" : "border-gray-300"}`}
+              value={formData.cholesterolHDL}
+              onChange={handleChange}
+              required
+            />
+            <div className="mt-2">Selected: {formData.cholesterolHDL} mg/dL</div>
+            {validationErrors.cholesterolHDL && <p className="text-red-500">{validationErrors.cholesterolHDL}</p>}
+          </div>
+
+          <div className="mb-6">
+            <label className="font-bold text-gray-700">Triglycerides (50-400 mg/dL) *</label>
+            <input
+              type="range"
+              name="cholesterolTriglycerides"
+              min="50"
+              max="400"
+              className={`mt-1 w-full ${validationErrors.cholesterolTriglycerides ? "border-red-500" : "border-gray-300"}`}
+              value={formData.cholesterolTriglycerides}
+              onChange={handleChange}
+              required
+            />
+            <div className="mt-2">Selected: {formData.cholesterolTriglycerides} mg/dL</div>
+            {validationErrors.cholesterolTriglycerides && <p className="text-red-500">{validationErrors.cholesterolTriglycerides}</p>}
+          </div>
+
+
+
+          <h2 className="font-bold text-lg text-gray-700 underline">Cognitive and Functional Assessments</h2> <br />
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* MMSE */}
+            <div className='mb-4'>
+              <label className='font-bold text-gray-700'>MMSE (0-30)</label>
+              <input
+                type='range'
+                min='0'
+                max='30'
+                value={formData.MMSE}
+                name='MMSE'
+                onChange={handleChange}
+                className='w-full'
+              />
+              <span className='text-gray-700'>{formData.MMSE}</span>
+            </div>
+
+            {/* Functional Assessment */}
+            <div className='mb-4'>
+              <label className='font-bold text-gray-700'>Functional Assessment (0-10)</label>
+              <input
+                type='range'
+                min='0'
+                max='10'
+                value={formData.functionalAssessment}
+                name='functionalAssessment'
+                onChange={handleChange}
+                className='w-full'
+              />
+              <span className='text-gray-700'>{formData.functionalAssessment}</span>
+            </div>
+
+            {/* Memory Complaints */}
+            <div className='mb-4'>
+              <label className="font-bold text-gray-700">Memory Complaints *</label>
+              <select
+                name='memoryComplaints'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.memoryComplaints}
+                onChange={handleChange}
                 required
               >
                 <option value=''>Select</option>
@@ -504,73 +726,122 @@ const Model1 = () => {
                 <option value='No'>No</option>
               </select>
             </div>
-          </div>
 
-          {/* Symptoms */}
-          <div className='mb-6'>
-            <label className='font-bold text-gray-700'>Symptoms Assessment *</label>
-            <div className='mt-2'>
-              {[
-                "Frequent urination",
-                "Excessive thirst",
-                "Unexplained weight loss",
-                "Fatigue",
-                "Blurred vision",
-                "Slow-healing wounds",
-                "Tingling or numbness",
-                "None",
-              ].map((symptom) => (
-                <label key={symptom} className='inline-flex items-center ml-6'>
-                  <input
-                    type='checkbox'
-                    name='symptoms'
-                    value={symptom}
-                    checked={formData.symptoms.includes(symptom)}
-                    onChange={handleChange}
-                    className='form-checkbox'
-                  />
-                  <span className='ml-2'>{symptom}</span>
-                </label>
-              ))}
+            {/* Behavioral Problems */}
+            <div className='mb-4'>
+              <label className="font-bold text-gray-700">Behavioral Problems *</label>
+              <select
+                name='behavioralProblems'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.behavioralProblems}
+                onChange={handleChange}
+                required
+              >
+                <option value=''>Select</option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
+              </select>
             </div>
-          </div>
 
-          {/* Family History of Diabetes */}
-          <div className=' mb-6'>
-            <label className='block font-bold'>Family History of Diabetes (How many family members have or had diabetes?) *</label>
-            <input
-              type='number'
-              name='familyHistory'
-              value={formData.familyHistory}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-lg ${validationErrors.familyHistory ? "border-red-500" : "border-gray-300"}`}
-              required
-              placeholder='Enter a number'
-            />
-            {validationErrors.familyHistory && <p className='text-red-500'>{validationErrors.familyHistory}</p>}
-          </div>
 
-          <div className='mb-6'>
-            <label className='block font-bold'>Other Medical Conditions (Select all that apply) *</label>
-            <div className='flex flex-wrap'>
-              {["High cholesterol", "Cardiovascular diseases", "Thyroid disorders", "None"].map((condition) => (
-                <label key={condition} className='finline-flex items-center ml-6'>
-                  <input
-                    type='checkbox'
-                    name='otherMedicalConditions'
-                    value={condition}
-                    checked={formData.otherMedicalConditions?.includes(condition)}
-                    onChange={handleChange}
-                    className=' mr-8'
-                  />
-                  <span className='ml-2'>{condition}</span>
-                </label>
-              ))}
+            {/* ADL */}
+            <div className='mb-4'>
+              <label className='font-bold text-gray-700'>ADL (0-10)</label>
+              <input
+                type='range'
+                min='0'
+                max='10'
+                value={formData.ADL}
+                name='ADL'
+                onChange={handleChange}
+                className='w-full'
+              />
+              <span className='text-gray-700'>{formData.ADL}</span>
+            </div>  </div>
+
+
+
+          <h2 className="font-bold text-lg text-gray-700 underline">Symptoms</h2> <br />
+          <div className="grid grid-cols-2 gap-4">
+            {/* Confusion */}
+            <div className='mb-4'>
+              <label className="font-bold text-gray-700">Confusion *</label>
+              <select
+                name='confusion'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.confusion}
+                onChange={handleChange}
+                required
+              >
+                <option value=''>Select</option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
+              </select>
             </div>
-          </div>
+
+            {/* Personality Changes */}
+            <div className='mb-4'>
+              <label className="font-bold text-gray-700">Personality Changes *</label>
+              <select
+                name='personalityChanges'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.personalityChanges}
+                onChange={handleChange}
+                required
+              >
+                <option value=''>Select</option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
+              </select>
+            </div>
+
+            {/* Difficulty Completing Tasks */}
+            <div className='mb-4'>
+              <label className="font-bold text-gray-700">Difficulty Completing Tasks *</label>
+              <select
+                name='difficultyCompletingTasks'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.difficultyCompletingTasks}
+                onChange={handleChange}
+                required
+              >
+                <option value=''>Select</option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
+              </select>
+            </div>
+
+            {/* Forgetfulness */}
+            <div className='mb-4'>
+              <label className="font-bold text-gray-700">Forgetfulness *</label>
+              <select
+                name='forgetfulness'
+                className='mt-1 p-2 border border-gray-300 w-full rounded-lg'
+                value={formData.forgetfulness}
+                onChange={handleChange}
+                required
+              >
+                <option value=''>Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div> <br />
+
+
+
+
+
+
+
+
+
+
           <button type='submit' className='bg-blue-500 text-white py-2 px-4 rounded-lg w-full'>
             {loading ? "Predicting..." : "Predict"}
           </button>
+
+
         </form>
       </div>
     </div>

@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pickle
 import pandas as pd
 
@@ -6,6 +7,9 @@ with open('model.pkl', 'rb') as file:
     rf_model = pickle.load(file)
 
 app = Flask(__name__)
+
+# Enable CORS for all routes and allow all origins
+CORS(app)
 
 @app.route('/predict', methods=['POST'])
 def predict_percentage():
@@ -29,14 +33,12 @@ def predict_percentage():
 
         features = pd.DataFrame([data])
         features_array = features.values
-        features_array = features.values
         percentage_prediction = rf_model.predict_proba(features_array)[0][1] * 100
         
-        return jsonify({'Alzheimer disease prediction': round(percentage_prediction, 2)})
+        return jsonify({'prediction': round(percentage_prediction, 2)})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
         
 if __name__ == '__main__':
     app.run(debug=True)
-

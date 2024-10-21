@@ -32,11 +32,12 @@ const Navbar = () => {
         <div className='flex items-center space-x-2'>
           {/* Link to Home Page */}
           <Link to='/'>
-            <img src='/images/home.png' alt='logo' className='w-8 h-8' />
-          </Link>
+  <img src='../images/logo app.jpeg' alt='log' className='w-10 h-10 object-contain' />
+</Link>
+
           {/* Link to Home Page through App Name */}
           <Link to='/' className='text-white text-2xl font-bold'>
-            Diabetes App
+          MindCare
           </Link>
         </div>
         <div className='left-options flex space-x-4'>
@@ -45,15 +46,10 @@ const Navbar = () => {
             className={`${location.pathname === "/model1" ? "bg-blue-500 underline" : "bg-blue-600"
               } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
           >
-            Diabetes Risk Assessment
+            Alzheimer's detection
           </Link>
-          <Link
-            to='/model2'
-            className={`${location.pathname === "/model2" ? "bg-blue-500 underline" : "bg-blue-600"
-              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
-          >
-            Diabetes Predictor
-          </Link>
+       
+
           <Link
             to='/blogs'
             className={`${location.pathname === "/blogs" ? "bg-blue-500 underline" : "bg-blue-600"
