@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import Logo from '../images/logo app.jpeg';
 
 const Navbar = () => {
   const auth = getAuth();
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const location = useLocation(); // Get the current path
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -23,122 +23,123 @@ const Navbar = () => {
 
   const handleLogout = () => {
     signOut(auth);
+    navigate("/Login");
   };
 
   return (
-    // bg-blue-600
-    <nav className='sticky top-0 bg-black z-50 p-3 shadow-lg'>
-      <div className='container mx-auto flex justify-between items-center'>
-        <div className='flex items-center space-x-2'>
-          {/* Link to Home Page */}
-          <Link to='/'>
-  <img src='../images/logo app.jpeg' alt='log' className='w-10 h-10 object-contain' />
-</Link>
+    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 mb-3.5">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <img src={Logo} className="h-8 rounded-full" alt="Logo" />
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MindCare</span>
+        </Link>
 
-          {/* Link to Home Page through App Name */}
-          <Link to='/' className='text-white text-2xl font-bold'>
-          MindCare
-          </Link>
-        </div>
-        <div className='left-options flex space-x-4'>
-          <Link
-            to='/model1'
-            className={`${location.pathname === "/model1" ? "bg-blue-500 underline" : "bg-blue-600"
-              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
-          >
-            Alzheimer's detection
-          </Link>
-       
-
-          <Link
-            to='/blogs'
-            className={`${location.pathname === "/blogs" ? "bg-blue-500 underline" : "bg-blue-600"
-              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
-          >
-            Blogs
-          </Link>
-          <Link
-            to='/exercise'
-            className={`${location.pathname === "/exercise" ? "bg-blue-500 underline" : "bg-blue-600"
-              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
-          >
-            Exercise
-          </Link>
-          <Link
-            to='/calculator'
-            className={`${location.pathname === "/calculator" ? "bg-blue-500 underline" : "bg-blue-600"
-              } text-white text-lg hover:bg-blue-400 px-3 py-1 rounded-lg transition duration-300`}
-          >
-            Calculator
-          </Link>
-        </div>
-
-        <div className='right-options flex space-x-1'>
-          {isAuthenticated ? (
-            <>
-              <Link to='/profile' className='text-white text-lg bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg transition duration-300'>
-                Profile
-              </Link>
-              <button onClick={handleLogout} className='text-white text-lg bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg transition duration-300'>
+        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <div>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={handleLogout}
+              >
                 Logout
               </button>
-            </>
-          ) : (
-            <>
-              <Link to='/signup' className='text-white text-lg bg-blue-600 hover:bg-yellow-600 px-3 py-1 rounded-lg transition duration-300'>
-                Signup
+            ) : (
+              <>
+                <Link to={'/Login'}>
+                  <button
+                    type="button"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-5"
+                  >
+                    Login
+                  </button></Link>
+                <Link to={'/SignUp'}>
+                  <button
+                    type="button"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Sign Up
+                  </button></Link>
+              </>
+            )}
+          </div>
+          <button
+            data-collapse-toggle="navbar-sticky"
+            type="button"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="navbar-sticky"
+            aria-expanded="false"
+          >
+            <span className="sr-only">Open main menu</span>
+            <svg
+              className="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+          id="navbar-sticky"
+        >
+          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+            <li>
+              <Link
+                to="/"
+                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+                aria-current="page"
+              >
+                Alzheimer's detection
               </Link>
-              <Link to='/login' className='text-white text-lg bg-blue-600 hover:bg-purple-600 px-3 py-1 rounded-lg transition duration-300'>
-                Login
+            </li>
+            <li>
+              <Link
+                to="/Blogs"
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              >
+                Blogs
               </Link>
-            </>
-          )}
+            </li>
+            <li>
+              <Link
+                to="/Exercise"
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              >
+                Exercise
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/Calculator"
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              >
+                Calculator
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/Profile"
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              >
+                Profile
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
+
   );
 };
 
 export default Navbar;
-
-// // src/components/Navbar.jsx
-// import React, { useState, useContext  } from 'react';
-// import { Link } from 'react-router-dom';
-// import './Navbar.css'; // Create this file for styling
-// import { AuthContext } from '../context/AuthContext';
-
-// const Navbar = () => {
-//   const { isAuthenticated, logout } = useContext(AuthContext);
-//   // const [isAuthenticated, setIsAuthenticated] = useState(true);
-
-//   const handleLogout = () => {
-//     // localStorage.removeItem('token');
-//     // setIsAuthenticated(false);
-//   };
-
-//   return (
-//     <nav className="navbar">
-//       <div className="left-options">
-//         <Link to="/model1" className="option">Model 1</Link>
-//         <Link to="/model2" className="option">Model 2</Link>
-//         <Link to="/blogs" className="option">Blogs</Link>
-//         <Link to="/exercise" className="option">Exercise</Link>
-//       </div>
-//       <div className="right-options">
-//         {isAuthenticated ? (
-//           <>
-//             <Link to="/profile" className="option">Profile</Link>
-//             {/* <button onClick={handleLogout} className="option">Logout</button> */}
-//           </>
-//         ) : (
-//           <>
-//             <Link to="/signup" className="option">Signup</Link>
-//             <Link to="/login" className="option">Login</Link>
-//           </>
-//         )}
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default Navbar;

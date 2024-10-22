@@ -1,27 +1,26 @@
-import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-// import { AuthContext } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from '../config/FirebaseConfig';
 import { FaUser, FaChartBar, FaHistory } from "react-icons/fa";
 
 import History from "../components/History";
 import PredictionChart from "../components/PredictionChart";
 
 const Profile = () => {
-  // const { isAuthenticated, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null); 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+            if (user.emailVerified)
+                setUser(user);
+        }
+    });
 
-  // useEffect(() => {
-  //   // Redirect to login if the user is not authenticated
-  //   if (!isAuthenticated) {
-  //     navigate("/login");
-  //   }
-  // }, [isAuthenticated, navigate]);
-
-  // Get email from localStorage
-  const email = localStorage.getItem("authEmail") || "user@example.com"; // Default email if not found
+    return () => unsubscribe();
+}, []);
 
   return (
-    <div className='min-h-screen bg-gray-100 flex flex-col items-center'>
+    <div className='min-h-screen bg-gray-100 flex flex-col items-center mt-12'>
       {/* Profile Section */}
       <div className='bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl mt-8'>
         <div className='flex items-center space-x-4'>
@@ -29,7 +28,7 @@ const Profile = () => {
           <div>
             <h2 className='text-2xl font-bold text-gray-800'>User Profile</h2>
             <p className='text-gray-600'>
-              <b>Email:</b> {email}
+            <b>Email:</b> {user ? user.email : "Please log in to see your email"}
             </p>
           </div>
         </div>
@@ -45,7 +44,7 @@ const Profile = () => {
           </div>
         </div>
       </div> */}
-      <PredictionChart email={email} />
+      <PredictionChart email={user ? user.email : "Please log in to see your email"} />
 
       {/* History Section */}
       {/* <div className='bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl mt-8'>

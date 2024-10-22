@@ -2,7 +2,7 @@ import React from 'react';
 
 const BlogCard = ({ title, description, imgSrc, link }) => {
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-10">
+    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-9">
       <a href={link}>
         <img className="w-full" src={imgSrc} alt={title} />
       </a>

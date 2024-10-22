@@ -13,7 +13,8 @@ export default function SignUp() {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [createPassword, setCreatePassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [errors, setErrors] = useState({});
     const [authError, setAuthError] = useState("");
@@ -21,7 +22,8 @@ export default function SignUp() {
     const resetInputFields = () => {
         setName("");
         setEmail("");
-        setPassword("");
+        setCreatePassword("");
+        setConfirmPassword("");
     }
 
     const validateForm = () => {
@@ -34,9 +36,20 @@ export default function SignUp() {
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             error.email = 'Invalid email address';
         }
-        if (!password || password.length < 8) {
-            error.password = 'Password must be at least 8 characters long';
-        }
+        if (createPassword !== confirmPassword) {
+            error.confirmPassword = "(Passwords are not matching)";
+          } else {
+            if (createPassword.length < 8) {
+              error.createPassword = "(Password must be more than 8 characters)";
+            } else if (
+              !createPassword.match(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@!#%&*?])[A-Za-z\d@!#%&*?]{8,}$/
+              )
+            ) {
+              error.createPassword =
+                "(Please include lowercase, uppercase, special characters)";
+            }
+          }
         if (!agreedToTerms) {
             error.terms = 'You must agree to the Terms and Conditions';
             setAuthError(error.terms);
@@ -64,7 +77,7 @@ export default function SignUp() {
         if (validateForm() === true) {
             setAlerts({ alertProcess: true, message: 'Signup in progress...' });
 
-            createUserWithEmailAndPassword(auth, email, password)
+            createUserWithEmailAndPassword(auth, email, createPassword)
                 .then(() => {
                     updateProfile(auth.currentUser, {
                         displayName: name
@@ -148,13 +161,24 @@ export default function SignUp() {
                             </div>
                             <div className="mb-4">
                                 <div className="flex justify-between align-center">
-                                    <label className="mb-2 inline-block text-sm font-medium text-gray-700" htmlFor="password">Password</label>
+                                    <label className="mb-2 inline-block text-sm font-medium text-gray-700" htmlFor="createPassword">Create Password</label>
                                 </div>
                                 <div className="relative flex flex-col w-full flex-wrap items-stretch">
-                                    <input type="password" id="password" className="relative block flex-auto cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-3 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" name="password" placeholder="Enter your Password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)} />
-                                    <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.password}</p>
+                                    <input type="password" id="password" className="relative block flex-auto cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-3 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" name="createPassword" placeholder="Enter your Password"
+                                        value={createPassword}
+                                        onChange={(e) => setCreatePassword(e.target.value)} />
+                                    <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.createPassword}</p>
+                                </div>
+                            </div>
+                            <div className="mb-4">
+                                <div className="flex justify-between align-center">
+                                    <label className="mb-2 inline-block text-sm font-medium text-gray-700" htmlFor="confirmPassword">Confirm Password</label>
+                                </div>
+                                <div className="relative flex flex-col w-full flex-wrap items-stretch">
+                                    <input type="password" id="password" className="relative block flex-auto cursor-text appearance-none rounded-md border border-gray-400 bg--100 py-3 px-3 text-sm outline-none focus:border-indigo-500 focus:bg-white focus:text-gray-600 focus:shadow" name="confirmPassword" placeholder="Enter your Password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)} />
+                                    <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.confirmPassword}</p>
                                 </div>
                             </div>
                             <div className="mb-4">
