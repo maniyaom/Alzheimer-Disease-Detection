@@ -14,6 +14,17 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [authError, setAuthError] = useState("");
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (user.emailVerified)
+                    navigate('/Home');
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setAlerts({ alertProcess: true, message: 'Logging in, please wait...' });

@@ -62,7 +62,7 @@ const Calculator = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-row items-top justify-center bg-gray-100 p-6">
+    <div className="min-h-screen flex flex-row items-top justify-center bg-gray-100 p-6 mt-12">
       {/* BMI Calculator */}
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 mb-8">
         <h2 className="text-2xl font-bold text-center mb-4 text-blue-600">BMI Calculator</h2>

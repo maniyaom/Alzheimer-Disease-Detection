@@ -15,19 +15,13 @@ import Navbar from './components/Navbar'; // Import the Navbar component
 import Suggestions1 from './pages/Suggestions1';
 import Calculator from './pages/Calculator';
 import AddData from './pages/AddData';
+import ForgotPassword from './pages/ForgotPassword';
 
 export default function App() {
   return (
     <>
       <BrowserRouter>
-        {/* <Routes>
-          <Route path="/Login" element={<Login />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/Home" element={<Home />} />
-          <Route path="/*" element={<Navigate to="/Login" />} />
-        </Routes> */}
-
-
+      
         <Navbar />  {/* Navbar will stay on top */}
         <Routes>
           <Route path="/" element={<Home />} />
@@ -41,6 +35,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/AddData" element={<AddData />} />
+          <Route path="/ForgotPassword" element={<ForgotPassword />} />
         </Routes>
 
       </BrowserRouter>
