@@ -1,5 +1,6 @@
 import React from "react";
 import BlogCard from "./BlogCard"; // Assuming BlogCard is in the same directory
+import Navbar from '../components/Navbar';
 
 const blogData = [
   {
@@ -49,11 +50,14 @@ const blogData = [
 
 const Blogs = () => {
   return (
+    <>
+    <Navbar />
     <div className='flex flex-wrap justify-around mt-10'>
       {blogData.map((blog, index) => (
         <BlogCard key={index} title={blog.title} description={blog.description} imgSrc={blog.imgSrc} link={blog.link} />
       ))}
     </div>
+    </>
   );
 };
 

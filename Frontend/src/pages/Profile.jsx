@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from '../config/FirebaseConfig';
 import { FaUser, FaChartBar, FaHistory } from "react-icons/fa";
+import Navbar from '../components/Navbar';
 
 import History from "../components/History";
 import PredictionChart from "../components/PredictionChart";
@@ -20,6 +21,8 @@ const Profile = () => {
 }, []);
 
   return (
+    <>
+    <Navbar />
     <div className='min-h-screen bg-gray-100 flex flex-col items-center mt-12'>
       {/* Profile Section */}
       <div className='bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl mt-8'>
@@ -33,6 +36,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
 
       {/* Data Visualization Section */}
       {/* <div className='bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl mt-8'>
@@ -58,6 +62,7 @@ const Profile = () => {
       </div> */}
       <History />
     </div>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const Suggestions1 = () => {
   const location = useLocation();
@@ -116,7 +117,9 @@ const Suggestions1 = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-4">
+    <>
+    <Navbar />
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-4 mt-12">
       {console.log('Prediction State:', prediction)}
 
       {prediction !== null && (
@@ -199,6 +202,7 @@ const Suggestions1 = () => {
 
 
     </div>
+</>
 
 
 

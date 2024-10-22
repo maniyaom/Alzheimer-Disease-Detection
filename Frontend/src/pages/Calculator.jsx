@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from '../components/Navbar';
 
 const Calculator = () => {
   const [height, setHeight] = useState('');
@@ -62,6 +63,8 @@ const Calculator = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="min-h-screen flex flex-row items-top justify-center bg-gray-100 p-6 mt-12">
       {/* BMI Calculator */}
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 mb-8">
@@ -222,6 +225,7 @@ const Calculator = () => {
       </div>
 
     </div>
+    </>
   );
 };
 
