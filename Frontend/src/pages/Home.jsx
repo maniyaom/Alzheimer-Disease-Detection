@@ -1,22 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import Navbar from '../components/Navbar';
 const Home = () => {
   return (
+    <>
+    <Navbar />
     <div className='min-h-screen flex flex-col justify-between bg-gray-100'>
       {/* Hero Section */}
       <header className='relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center py-20 px-4'>
-        <h1 className='text-5xl font-extrabold mb-4'>Diabetes Prediction App</h1>
-        <p className='text-lg font-medium mb-8'>Stay ahead of your health by assessing your risk of diabetes and getting personalized suggestions.</p>
+        <h1 className='text-5xl font-extrabold mb-4'>Alzheimer Disease Detection App</h1>
+        <p className='text-lg font-medium mb-8'>Stay ahead of your health by assessing your risk of Alzheimer’s disease and receiving personalized recommendations tailored to your lifestyle.</p>
         <div className='flex justify-center space-x-6'>
           <Link to='/model1'>
             <button className='px-6 py-3 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-gray-200 transition duration-300'>
-              Model 1 Diabetes Risk Assessment
-            </button>
-          </Link>
-          <Link to='/model2'>
-            <button className='px-6 py-3 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-gray-200 transition duration-300'>
-              Model 2 Diabetes Predictor
+            Alzheimer Disease Detection
             </button>
           </Link>
         </div>
@@ -79,6 +76,7 @@ const Home = () => {
         <p>&copy; 2024 Diabetes Prediction App. All rights reserved.</p>
       </footer>
     </div>
+    </>
   );
 };
 

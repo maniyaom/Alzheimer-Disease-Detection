@@ -4,6 +4,7 @@ import { getAuth, updateProfile, onAuthStateChanged, createUserWithEmailAndPassw
 import google_logo from '../assets/icons/google-logo.png';
 import Loading from '../components/Loading';
 import LoadingSuccessFailure from '../components/LoadingSuccessFailure';
+import Navbar from '../components/Navbar';
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -122,6 +123,7 @@ export default function SignUp() {
 
     return (
         <>
+            <Navbar />
             {alerts.alertProcess && <Loading message={alerts.message} />}
             {alerts.alertFinish && <LoadingSuccessFailure success={alerts.success} message={alerts.message} />}
             <div className="flex justify-center align-center h-screen w-screen flex-wrap text-slate-800">

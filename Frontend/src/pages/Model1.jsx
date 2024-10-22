@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from '../components/Navbar';
 
 // Mappings for binary and ordinal values
 const binary_mappings = {
@@ -285,7 +286,9 @@ const Model1 = () => {
 
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-100 p-4'>
+    <>
+    <Navbar />
+    <div className='min-h-screen flex items-center justify-center bg-gray-100 p-4 mt-12'>
       <div className='w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg'>
         <h1 className='text-2xl font-bold mb-6'>Alzheimer's Assessment Form</h1>
         <form onSubmit={handleSubmit}>
@@ -845,6 +848,7 @@ const Model1 = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 
