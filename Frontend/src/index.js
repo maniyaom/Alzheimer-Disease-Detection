@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Navbar from './components/Navbar'; // Import the Navbar component
 import Suggestions1 from './pages/Suggestions1';
 import Calculator from './pages/Calculator';
+import AddData from './pages/AddData';
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/exercise" element={<Exercise />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/calculator" element={<Calculator />} />
+          <Route path="/AddData" element={<AddData />} />
         </Routes>
 
       </BrowserRouter>
