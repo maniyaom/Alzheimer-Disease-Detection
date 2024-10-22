@@ -3,43 +3,46 @@ import BlogCard from "./BlogCard"; // Assuming BlogCard is in the same directory
 
 const blogData = [
   {
-    title: "Diabetes types and treatments",
+    title: "Understanding Alzheimer's Disease",
     description:
-      "Diabetes is a chronic condition that impairs the body’s ability to process blood glucose. There are several types, including type 1, type 2, and gestational diabetes, which have various treatments.",
-    imgSrc: "/images/blogsImages/blog1.png",
-    link: "https://www.medicalnewstoday.com/articles/323627",
+      "Alzheimer's disease is a progressive disorder that causes brain cells to degenerate and die. It’s the most common cause of dementia.",
+    imgSrc: "https://media.istockphoto.com/id/648706624/photo/alzheimers-disease-concept-brain-degenerative-diseases-parkinson.jpg?s=2048x2048&w=is&k=20&c=Y_-Ekwhkh9b94AYbwUpO_zJpmBtHKFLjAV3C_obd7J4=",
+    link: "https://www.alz.org/alzheimers-dementia/what-is-alzheimers",
   },
   {
-    title: "Diabetes - WHO",
+    title: "Early Signs and Symptoms of Alzheimer's",
     description:
-      "The number of people with diabetes rose from 108 million in 1980 to 422 million in 2014. Prevalence has been rising more rapidly in low- and middle-income countries.",
-    imgSrc: "/images/blogsImages/blog2.png",
-    link: "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+      "Memory loss, confusion, and difficulty completing familiar tasks are early signs of Alzheimer's disease. Recognizing them is crucial for timely intervention.",
+    imgSrc: "https://media.istockphoto.com/id/97873871/photo/mri-brain-scan-of-head-and-skull-with-hand-pointing.jpg?s=2048x2048&w=is&k=20&c=ljKHf5336kkoDlXn-Q9aFWp22sxkvYq9svRxIOIqDuA=",
+    link: "https://www.nia.nih.gov/health/what-are-signs-alzheimers-disease",
   },
   {
-    title: "Journal of Diabetes by Zachary T. Bloomgarden and Guang Ning",
+    title: "Alzheimer's Disease Diagnosis and Treatment",
     description:
-      "Journal of Diabetes (JDB) is an open access journal devoted to diabetes research, therapeutics, and education. It is an official journal of the Chinese Society of Endocrinology.",
-    imgSrc: "/images/blogsImages/blog3.png",
-    link: "https://onlinelibrary.wiley.com/journal/17530407",
+      "Learn about the diagnosis and treatment options available for Alzheimer's, including medications that can slow progression and improve quality of life.",
+    imgSrc: "https://cdn.pixabay.com/photo/2013/07/13/11/44/capsule-158568_1280.png",
+    link: "https://www.mayoclinic.org/diseases-conditions/alzheimers-disease/diagnosis-treatment/drc-20350453",
   },
   {
-    title: "What is Diabetes? Types, Symptoms, and Causes - Harvard Health",
-    description: "Diabetes occurs when the body has trouble using the sugar it gets from food for energy. Sugar builds up in the bloodstream.",
-    imgSrc: "/images/blogsImages/blog4.png",
-    link: "https://www.health.harvard.edu/topics/diabetes",
+    title: "Alzheimer's Research: Progress and Hope",
+    description:
+      "Research on Alzheimer's is progressing, focusing on better treatments, understanding its causes, and working towards a cure.",
+    imgSrc: "https://cdn.pixabay.com/photo/2021/03/02/17/38/science-6063326_1280.png",
+    link: "https://www.alzheimersresearchuk.org/research/what-we-do/",
   },
   {
-    title: "PREVENTING DIABETES",
-    description: "Yes, type 2 diabetes can be prevented with thoughtful lifestyle changes and plant-rich diets",
-    imgSrc: "/images/blogsImages/blog5.png",
-    link: "https://drmohans.com/preventing-diabetes/",
+    title: "Preventing Alzheimer's Disease",
+    description:
+      "While there is no cure for Alzheimer's, certain lifestyle changes can help reduce the risk, including a healthy diet, regular exercise, and mental stimulation.",
+    imgSrc: "https://cdn.pixabay.com/photo/2024/05/26/19/51/nursing-8789373_1280.png",
+    link: "https://www.health.harvard.edu/mind-and-mood/preventing-alzheimers-disease-is-within-your-control",
   },
   {
-    title: "Warning Signs and Symptoms",
-    description: "Know the warning signs and symptoms of diabetes and diabetes complications so you can take action to improve your health",
-    imgSrc: "/images/blogsImages/blog6.png",
-    link: "https://diabetes.org/about-diabetes/warning-signs-symptoms",
+    title: "Caregiving for Alzheimer's Patients",
+    description:
+      "Caring for someone with Alzheimer's requires patience, knowledge, and support. Learn how to provide effective care and manage the challenges.",
+    imgSrc: "https://media.istockphoto.com/id/1214355991/vector/home-care-services-for-seniors-nurse-or-volunteer-worker-taking-care-of-elderly-woman-vector.jpg?s=2048x2048&w=is&k=20&c=9R8DZv1PTEibqWeLX0e4w1uTN68c00da9evY2ae6cpQ=",
+    link: "https://www.alz.org/help-support/caregiving",
   },
   // Add more blog entries if needed
 ];
