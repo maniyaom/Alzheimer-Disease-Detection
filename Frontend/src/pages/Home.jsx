@@ -33,17 +33,17 @@ const Home = () => {
               <p className='text-center text-gray-600'>Get results using modern machine learning models.</p>
             </div>
             <div className='bg-white p-6 rounded-lg shadow-lg'>
-              <img src='/images/home2.png' alt='Personalized' className='w-16 h-16 mb-4 mx-auto' />
+              <img src='https://cdn.pixabay.com/photo/2013/07/13/10/13/contact-156788_1280.png' alt='Personalized' className='w-16 h-16 mb-4 mx-auto' />
               <h3 className='text-2xl font-bold text-center mb-2'>Personalized Suggestions</h3>
               <p className='text-center text-gray-600'>Receive lifestyle and health suggestions based on your risk factors.</p>
             </div>
             <div className='bg-white p-6 rounded-lg shadow-lg'>
-              <img src='/images/home3.png' alt='Blogs' className='w-16 h-16 mb-4 mx-auto' />
+              <img src='https://cdn.pixabay.com/photo/2021/11/10/18/21/woman-6784555_1280.jpg' alt='Blogs' className='w-30 h-30 mb-4 mx-auto' />
               <h3 className='text-2xl font-bold text-center mb-2'>Informative Blogs</h3>
               <p className='text-center text-gray-600'>Learn more about diabetes through our curated articles.</p>
             </div>
             <div className='bg-white p-6 rounded-lg shadow-lg'>
-              <img src='/images/home4.png' alt='Exercise' className='w-16 h-16 mb-4 mx-auto' />
+              <img src='/images/home3.jpg' alt='Exercise' className='w-16 h-16 mb-4 mx-auto' />
               <h3 className='text-2xl font-bold text-center mb-2'>Healthy Exercises</h3>
               <p className='text-center text-gray-600'>Discover exercises to maintain a healthy lifestyle and lower risk.</p>
             </div>
